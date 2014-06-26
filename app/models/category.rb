@@ -50,6 +50,11 @@ class Category < ActiveRecord::Base
     reorder send(:with_exclusive_scope){find(:all, :order => 'UPPER(name)').collect { |c| c.id }}
   end
 
+  def self.get_or_build_category id = nil
+    return Category.find(id) if id
+    Category.new
+  end
+
   def published_articles
     articles.already_published
   end

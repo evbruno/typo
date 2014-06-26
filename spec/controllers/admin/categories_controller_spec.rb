@@ -62,5 +62,20 @@ describe Admin::CategoriesController do
 
     assert_raise(ActiveRecord::RecordNotFound) { Category.find(test_id) }
   end
+
+  it "test render form for new category" do
+    get :new
+    assert_response :success
+  end
+
+  it "test render form for editing category" do
+    cat = Factory(:category, name: 'my category', permalink: 'my-cat')
+    get :edit, id: cat.id
+
+    assert_response :success
+    assigns(:category).should_not be_nil
+    assigns(:category).name.should == 'my category'
+    assigns(:category).permalink.should == 'my-cat'
+  end
   
 end
