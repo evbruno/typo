@@ -19,8 +19,13 @@ module NavigationHelpers
       '/admin/content/new'
     when /^the new category page$/
       '/admin/categories/new'
-    when /^edit page for "(.*)"$/i
+    when /^edit article page for "(.*)"$/i
       "/admin/content/edit/#{Article.find_by_title($1).id}"
+    # when /^view article page for "(.*)"$/i
+    #   link = Article.find_by_title($1).permalink_url(nil,true)
+    #   puts "link = #{link}"
+    #   "#{link}"
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

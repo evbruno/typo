@@ -12,7 +12,10 @@ Feature: Merge Articles
       | 22 | Title Lorem    | Lorem body  |
 
   Scenario: Successfully merge articles
-    Given I am on edit page for "Title Lipsum"
+    Given I am on edit article page for "Title Lipsum"
     When I fill in "merge_with" with "22"
     And I press "Merge"
     Then I should be on the admin content page
+    # Then I am on view article page for "Title Lipsum"
+    Given I am on edit article page for "Title Lipsum"
+    And I should see /Body lipsum(\s*)Lorem body/
