@@ -5,7 +5,7 @@
 
 <% end %>
 
-<% if form_action[:shall_merge] && @can_merge %>
+<% if @can_merge %>
 	<%= render :partial => "merge_with_form", locals:  { :merge_action => {
 		:action => 'merge',
 		:id => form_action[:id] }} %>
