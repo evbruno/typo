@@ -501,18 +501,20 @@ describe Admin::ContentController do
 
       it 'should merge two articles' do
         source = @article
-        merge_with = Factory(:second_article)
-
-        pp source
-        pp merge_with
+        merge_with = Factory(:second_article, title: 'Second title', body: 'Second body')
+        # pp source
+        # pp merge_with
 
         post :merge, 'id' => source.id, 'merge_with' => merge_with.id
         
         assert_response :redirect
-        source.reload
-        source.title.should == 'A big article'
-        source.body.should == 'A content with several data '
-        source.user.name.should == 'user_5'
+
+        flash[:notice].should match(/Merged the articles 'A big article' and 'Second title'. Article '(\d+)' created/)
+
+        new_article = Article.last
+        new_article.title.should == 'A big article'
+        new_article.body.should == "A content with several data\nSecond body"
+        new_article.user.name.should == 'Bond'
       end
 
       it 'should update article by edit action' do
@@ -666,6 +668,16 @@ describe Admin::ContentController do
         response.body.should_not contain(/Merge Articles/)
         response.should_not render_template('merge_with_form')
       end
+
+       it 'should not merge' do
+        source = @article
+        merge_with = Factory(:second_article, title: 'Second title', body: 'Second body')
+
+        post :merge, 'id' => source.id, 'merge_with' => merge_with.id
+        
+        assert_response :forbidden
+      end
+
 
       it 'should update article by edit action' do
         begin

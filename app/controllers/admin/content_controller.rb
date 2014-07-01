@@ -28,8 +28,15 @@ class Admin::ContentController < Admin::BaseController
   end
 
   def merge
-    pp params
-    raise 'not ready!'
+    return head(:forbidden) unless @current_user.admin?
+
+    source = Article.find(params[:id])
+    merged = Article.find(params[:merge_with])
+    new_article = source.merge_with merged
+
+    flash[:notice] = _"Merged the articles '#{source.title}' and '#{merged.title}'. Article '#{new_article.id}' created"
+    redirect_to :action => 'index'
+    #raise 'not ready!'
   end
 
   def edit
