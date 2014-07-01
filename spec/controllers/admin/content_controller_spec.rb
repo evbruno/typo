@@ -492,6 +492,12 @@ describe Admin::ContentController do
         response.should contain(/extended content/)
       end
 
+      it 'should allow to merge an article' do
+        get :edit, 'id' => @article.id
+        response.should render_template('new')
+        response.should render_template('merge_with_form')
+      end
+
       it 'should update article by edit action' do
         begin
           ActionMailer::Base.perform_deliveries = true
