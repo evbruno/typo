@@ -630,5 +630,48 @@ describe Article do
     end
 
   end
+
+  describe 'Merge', pending: false do
+
+    before :each do
+      @first_article = Factory(:article)
+      @first_article.comments << Factory(:comment)
+
+      @second_article = Factory(:second_article, body: 'Second Article body')
+      @second_article.comments << Factory(:comment, body: 'Second Comment body', article: @second_article)
+    end
+
+    it 'should delete both articles and create a new one' do
+      new_article = @first_article.merge_with @second_article
+
+      Article.find_by_id(@first_article.id).should be_nil
+      Article.find_by_id(@second_article.id).should be_nil
+
+      Article.find_by_id(new_article.id).should_not be_nil
+      new_article.id.should_not == @first_article.id
+      new_article.id.should_not == @second_article.id
+    end
+
+
+    it 'should merge content with another article' do
+      new_article = @first_article.merge_with @second_article
+
+      new_article.title.should == 'A big article'
+      new_article.body.should == 'A content with several data
+Second Article body'
+      new_article.user.name.should == 'Bond'
+    end
+
+    it 'should merge comments' do
+      new_article = @first_article.merge_with @second_article
+      comments = new_article.comments.order(:id)
+
+      comments.size.should == 2
+      comments[0].body.should == 'Test <a href="http://fakeurl.co.uk">body</a>'
+      comments[1].body.should == 'Second Comment body'
+    end
+
+  end
+
 end
 

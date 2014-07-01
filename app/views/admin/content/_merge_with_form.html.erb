@@ -1,6 +1,9 @@
 <%= form_tag(merge_action, :id => "merge_with_form") do %>
 
-  <%= text_field form_action, nil %>
-  <input type="submit" value="Merge">
+  <h3>Merge Articles</h3>
+
+  <label for='merge_with'>Article id: </label>
+  <%= text_field 'merge_with', nil %>
+  <input type="submit" value="Merge With This Article">
 
 <% end %>

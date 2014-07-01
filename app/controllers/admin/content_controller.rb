@@ -27,7 +27,14 @@ class Admin::ContentController < Admin::BaseController
     new_or_edit
   end
 
+  def merge
+    pp params
+    raise 'not ready!'
+  end
+
   def edit
+    @can_merge = params[:id] && @current_user.admin?
+
     @article = Article.find(params[:id])
     unless @article.access_by? current_user
       redirect_to :action => 'index'

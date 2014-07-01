@@ -416,6 +416,24 @@ class Article < Content
     user.admin? || user_id == user.id
   end
 
+  def merge_with(other_article)
+    new_article = self.clone
+    new_article.guid = nil
+    new_article.body = self.body + "\n" + other_article.body
+    new_article.save!
+
+    comments.each { |c| c.article = new_article; c.save! }
+    other_article.comments.each { |c| c.article = new_article; c.save! }
+
+    self.comments(true).clear
+    other_article.comments(true).clear
+
+    destroy
+    other_article.destroy
+
+    new_article
+  end
+
   protected
 
   def set_published_at

@@ -495,7 +495,24 @@ describe Admin::ContentController do
       it 'should allow to merge an article' do
         get :edit, 'id' => @article.id
         response.should render_template('new')
+        response.body.should contain(/Merge Articles/)
         response.should render_template('merge_with_form')
+      end
+
+      it 'should merge two articles' do
+        source = @article
+        merge_with = Factory(:second_article)
+
+        pp source
+        pp merge_with
+
+        post :merge, 'id' => source.id, 'merge_with' => merge_with.id
+        
+        assert_response :redirect
+        source.reload
+        source.title.should == 'A big article'
+        source.body.should == 'A content with several data '
+        source.user.name.should == 'user_5'
       end
 
       it 'should update article by edit action' do
@@ -640,6 +657,14 @@ describe Admin::ContentController do
         response.should render_template('new')
         assigns(:article).should_not be_nil
         assigns(:article).should be_valid
+      end
+
+       it 'should not allow to merge articles' do
+        get :edit, 'id' => @article.id
+        response.should render_template('new')
+        response.should render_template('new')
+        response.body.should_not contain(/Merge Articles/)
+        response.should_not render_template('merge_with_form')
       end
 
       it 'should update article by edit action' do
